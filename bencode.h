@@ -60,6 +60,7 @@ long long be_str_len(be_node *node);
 be_node *be_decode(const char *bencode);
 be_node *be_decoden(const char *bencode, long long bencode_len);
 void be_free(be_node *node);
+void _be_free_str(char *str);
 
 //dump out the be_node encoding starting from the top
 void be_dump(be_node *node);

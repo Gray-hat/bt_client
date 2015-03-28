@@ -311,11 +311,11 @@ char * _read_file(char * file, long long *len){
   return ret;
 }
 
-be_node * load_be_node(char * torf){
+be_node * load_be_node(char * torrent_file){
   char * torf_d; //stores the raw data of the torrent file
   long long torf_s;
   be_node * node; //store the top node in the bencoding of the torrent file
-  torf_d = _read_file(torf,&torf_s);
+  torf_d = _read_file(torrent_file,&torf_s);
   node = be_decoden(torf_d,torf_s);
   free(torf_d); //free the raw torrent file, not needed anymore
 
