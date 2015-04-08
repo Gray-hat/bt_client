@@ -48,7 +48,7 @@ int main (int argc, char * argv[]){
   node = load_be_node(bt_args.torrent_file);
   bt_info.length = 0;
   response_parse = parse_bt_info(&bt_info ,node, "");
-  response = compute_info_hash(bt_args);
+  response = compute_info_hash(bt_args.torrent_file, &bt_info);
   if(bt_args.verbose){
     be_dump(node);
   }

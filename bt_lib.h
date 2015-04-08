@@ -64,7 +64,8 @@ typedef struct {
   long long length; //length of the file in bytes
   int num_pieces; //number of pieces, computed based on above two values
   unsigned char ** piece_hashes; //pointer to 20 byte data buffers containing the sha1sum of each of the pieces
-  unsigned char info_hash[20];
+  unsigned char *info_hash;
+  char *info_hash_hex;
 } bt_info_t;
 
 
@@ -184,6 +185,6 @@ int sha1_piece(bt_args_t * bt_args, bt_piece_t * piece, unsigned char * hash);
   such as peer list*/
 int contact_tracker(bt_args_t * bt_args);
 
-int compute_info_hash(bt_args_t bt_args);
+int compute_info_hash(char *torrent_file, bt_info_t * bt_info);
 
 #endif

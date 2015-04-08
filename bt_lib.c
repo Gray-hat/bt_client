@@ -262,15 +262,17 @@ int send_to_peer(peer_t * peer, bt_msg_t * msg){
   return 0;
 }
 
-int compute_info_hash(bt_args_t bt_args){
+int compute_info_hash(char *torrent_file, bt_info_t * bt_info){
     //get the torrent file and compute the SHA1 of the info value
   FILE *fp;
   int c;
+  unsigned char sha_temp[20];
   int counter = 0;
   long int start =0;
   long int stop = 0;
   
-  fp = fopen(bt_args.torrent_file, "rb");
+  
+  fp = fopen(torrent_file, "rb");
   if (fp == NULL){
     perror("Error opening file");
 
@@ -279,8 +281,8 @@ int compute_info_hash(bt_args_t bt_args){
 
   while ((c = fgetc(fp)) != EOF){
   
-    if (counter == 7){
-      start = ftell(fp);
+    if (counter == 4){
+      start = ftell(fp) -1;
       break;
     }
     if(c == 'i' && counter == 0){
@@ -299,28 +301,17 @@ int compute_info_hash(bt_args_t bt_args){
       counter += 1;
       continue;
     }
-    if (c == 'd' && counter == 4){
-      counter += 1;
-      continue;
-    }
-    if (c == '5' && counter == 5){
-      counter += 1;
-      continue;
-    }
-    if (c == ':' && counter == 6){
-      counter += 1;
-      continue;
-    }   
+      
     counter = 0;
   
 
   }
   fseek(fp, 0, SEEK_END);
   stop = ftell(fp);
-  printf("%ld %ld %ld\n",start,stop,stop-start );
+ 
 
-  unsigned char info_dict[stop-start+1];
-  fseek(fp, start-1, SEEK_SET);
+  unsigned char info_dict[stop-start-1];
+  fseek(fp, start, SEEK_SET);
 
   int i = 0;
   while ((c = fgetc(fp)) != EOF){
@@ -331,8 +322,16 @@ int compute_info_hash(bt_args_t bt_args){
   info_dict[i] = '\0';
   fclose(fp);
 
-  SHA1(info_dict, sizeof(info_dict), bt_args.bt_info->info_hash);
+  SHA1(info_dict, sizeof(info_dict), sha_temp);
+  bt_info->info_hash = sha_temp;
 
+  char out[41]; //null terminator
+  for (i = 0; i < 20; i++) {
+      snprintf(out+i*2, 3, "%02x", sha_temp[i]);
+  }
+
+ 
+  bt_info->info_hash_hex = out;
 
   return 0;
 
