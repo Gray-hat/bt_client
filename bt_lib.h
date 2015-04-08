@@ -61,9 +61,10 @@ typedef struct {
   char announce[FILE_NAME_MAX]; //url of tracker
   char name[FILE_NAME_MAX]; //name of file
   int piece_length; //number of bytes in each piece
-  int length; //length of the file in bytes
+  long long length; //length of the file in bytes
   int num_pieces; //number of pieces, computed based on above two values
-  char ** piece_hashes; //pointer to 20 byte data buffers containing the sha1sum of each of the pieces
+  unsigned char ** piece_hashes; //pointer to 20 byte data buffers containing the sha1sum of each of the pieces
+  unsigned char info_hash[20];
 } bt_info_t;
 
 
@@ -131,7 +132,7 @@ typedef struct bt_msg{
 
 
 
-int parse_bt_info(bt_info_t * bt_info, be_node * node);
+int parse_bt_info(bt_info_t * bt_info, be_node * node, char * dict_key);
 
 /*choose a random id for this node*/
 unsigned int select_id();
@@ -183,6 +184,6 @@ int sha1_piece(bt_args_t * bt_args, bt_piece_t * piece, unsigned char * hash);
   such as peer list*/
 int contact_tracker(bt_args_t * bt_args);
 
-
+int compute_info_hash(bt_args_t bt_args);
 
 #endif

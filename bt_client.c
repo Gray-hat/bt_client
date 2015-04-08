@@ -19,8 +19,12 @@
 int main (int argc, char * argv[]){
 
   bt_args_t bt_args;
+  bt_info_t bt_info;
+  bt_args.bt_info = &bt_info;
   be_node * node; // top node in the bencoding
   int i;
+  int response_parse;
+  int response;
 
   parse_args(&bt_args, argc, argv);
 
@@ -42,7 +46,9 @@ int main (int argc, char * argv[]){
 
   //read and parse the torent file
   node = load_be_node(bt_args.torrent_file);
-
+  bt_info.length = 0;
+  response_parse = parse_bt_info(&bt_info ,node, "");
+  response = compute_info_hash(bt_args);
   if(bt_args.verbose){
     be_dump(node);
   }
